@@ -14,7 +14,7 @@ const Emitter = require('events')
 
 //Database Connectionexpress
 //const url = 'mongodb://localhost:27017/pizza?retryWrites=true&w=majority';
-mongoose.connect('mongodb://localhost:27017/pizza', { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: true});
+mongoose.connect(process.env.MONGO_CONNECTION_URL, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: true});
 const connection = mongoose.connection;
 connection.once('open', () => {
     console.log('Database connected...');
@@ -69,6 +69,9 @@ app.set('views', path.join(__dirname, '/resources/views'));
 app.set('view engine', 'ejs');
 
 require('./routes/web')(app)
+app.use((req, res) => {
+    res.status(404).render('errors/404')
+})
 
 const server = app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
